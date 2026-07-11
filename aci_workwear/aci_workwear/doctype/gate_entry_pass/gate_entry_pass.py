@@ -94,7 +94,7 @@ class GateEntryPass(Document):
 				"uom": row.uom,
 				"s_warehouse": row.source_warehouse or from_wh,
 				"t_warehouse": row.target_warehouse or to_wh,
-				"basic_rate": 0,  # optional: force zero rate if you don't want any valuation impact
+				"basic_rate": 0,  
 			})
 
 		se.insert(ignore_permissions=True)
