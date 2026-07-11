@@ -1,0 +1,189 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "autoname": "GEP-.YYYY.-.#####",
+ "creation": "2026-07-11 23:41:45.588103",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "section_break_3few",
+  "company",
+  "gate_entry_purpose",
+  "entry_type",
+  "gate_entry_no",
+  "column_break_k9gd",
+  "posting_date",
+  "posting_time",
+  "return_against",
+  "status",
+  "amended_from",
+  "stock_movement_details_tab",
+  "source_warehouse",
+  "expected_return_date",
+  "column_break_goly",
+  "target_warehouse",
+  "stock_entry",
+  "section_break_ollu",
+  "items"
+ ],
+ "fields": [
+  {
+   "fieldname": "section_break_3few",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Gate Entry Pass",
+   "print_hide": 1,
+   "read_only": 1,
+   "search_index": 1
+  },
+  {
+   "fieldname": "entry_type",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Entry Type",
+   "options": "Outward\nInward",
+   "reqd": 1
+  },
+  {
+   "fieldname": "gate_entry_purpose",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Gate Entry Purpose",
+   "options": "\nSample Movement\nCustomer Asset - Repair",
+   "reqd": 1
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "in_list_view": 1,
+   "label": "Posting Date",
+   "reqd": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Company",
+   "options": "Company",
+   "reqd": 1
+  },
+  {
+   "fieldname": "return_against",
+   "fieldtype": "Link",
+   "label": "Return Against",
+   "options": "Gate Entry Pass"
+  },
+  {
+   "fieldname": "status",
+   "fieldtype": "Select",
+   "label": "Status",
+   "options": "Draft\nReturned\nPartially Returned\nCancelled",
+   "read_only": 1
+  },
+  {
+   "fieldname": "stock_movement_details_tab",
+   "fieldtype": "Section Break",
+   "label": "Stock Movement Details"
+  },
+  {
+   "fieldname": "source_warehouse",
+   "fieldtype": "Link",
+   "label": "Source Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "target_warehouse",
+   "fieldtype": "Link",
+   "label": "Target Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
+  },
+  {
+   "fieldname": "stock_entry",
+   "fieldtype": "Link",
+   "label": "Stock Entry",
+   "options": "Stock Entry",
+   "read_only": 1
+  },
+  {
+   "fieldname": "expected_return_date",
+   "fieldtype": "Date",
+   "label": "Expected Return Date"
+  },
+  {
+   "fieldname": "column_break_k9gd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_goly",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "items",
+   "fieldtype": "Table",
+   "label": "Items",
+   "options": "Gate Entry Items",
+   "reqd": 1
+  },
+  {
+   "fieldname": "section_break_ollu",
+   "fieldtype": "Section Break",
+   "label": "Gate Entry Items"
+  },
+  {
+   "fieldname": "gate_entry_no",
+   "fieldtype": "Data",
+   "label": "Gate Entry No",
+   "reqd": 1
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "custom_gate_entry_pass"
+  }
+ ],
+ "modified": "2026-07-12 00:42:20.377803",
+ "modified_by": "Administrator",
+ "module": "ACI Workwear",
+ "name": "Gate Entry Pass",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "submit": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
