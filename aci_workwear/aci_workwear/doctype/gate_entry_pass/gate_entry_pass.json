@@ -81,6 +81,7 @@
    "reqd": 1
   },
   {
+   "depends_on": "eval:doc.entry_type == 'Inward'",
    "fieldname": "return_against",
    "fieldtype": "Link",
    "label": "Return Against",
@@ -160,7 +161,7 @@
    "link_fieldname": "custom_gate_entry_pass"
   }
  ],
- "modified": "2026-07-12 00:42:20.377803",
+ "modified": "2026-07-12 11:51:23.574325",
  "modified_by": "Administrator",
  "module": "ACI Workwear",
  "name": "Gate Entry Pass",
