@@ -15,6 +15,7 @@
   "section_break_0d6u",
   "item_code",
   "item_name",
+  "non_inventory_item",
   "qty",
   "uom",
   "description"
@@ -29,8 +30,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Item Code",
-   "options": "Item",
-   "reqd": 1
+   "options": "Item"
   },
   {
    "fetch_from": "item_code.item_name",
@@ -90,13 +90,19 @@
    "fieldname": "serial_no",
    "fieldtype": "Data",
    "label": "Serial No"
+  },
+  {
+   "fieldname": "non_inventory_item",
+   "fieldtype": "Autocomplete",
+   "in_list_view": 1,
+   "label": "Non Inventory Item"
   }
  ],
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-07-12 00:29:25.067506",
+ "modified": "2026-07-12 13:40:24.659028",
  "modified_by": "Administrator",
  "module": "ACI Workwear",
  "name": "Gate Entry Items",
