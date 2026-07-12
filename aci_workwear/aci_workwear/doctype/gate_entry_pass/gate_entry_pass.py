@@ -42,8 +42,8 @@ class GateEntryPass(Document):
 			self.handle_customer_asset()
 
 	def on_cancel(self):
-		if self.linked_stock_entry:
-			se = frappe.get_doc("Stock Entry", self.linked_stock_entry)
+		if self.stock_entry:
+			se = frappe.get_doc("Stock Entry", self.stock_entry)
 			if se.docstatus == 1:
 				se.cancel()
 
@@ -61,7 +61,7 @@ class GateEntryPass(Document):
 				to_wh=self.target_warehouse,
 				items=self.items,
 			)
-			self.db_set("linked_stock_entry", se_name)
+			self.db_set("stock_entry", se_name)
 			self.db_set("status", "Out")
 
 		elif self.entry_type == "Inward":
@@ -72,7 +72,7 @@ class GateEntryPass(Document):
 				to_wh=self.source_warehouse,      
 				items=self.items,
 			)
-			self.db_set("linked_stock_entry", se_name)
+			self.db_set("stock_entry", se_name)
 			self.db_set("status", "Returned")
 
 			self.update_original_returned_qty()
@@ -127,8 +127,10 @@ class GateEntryPass(Document):
 			if flt(row.returned_qty) < flt(row.qty):
 				fully_returned = False
 
-		original.db_set("status" , "Returned") if fully_returned else "Partially Returned"
+		original.status = "Returned" if fully_returned else "Partially Returned"
+		original.flags.ignore_validate_update_after_submit = True
 		original.save(ignore_permissions=True)
+		
 
 	def reverse_return_qty_on_original(self):
 		original = frappe.get_doc("Gate Entry Pass", self.return_against)
@@ -139,6 +141,7 @@ class GateEntryPass(Document):
 			row.returned_qty = flt(row.get("returned_qty") or 0) - returned_now
 
 		original.status = "Out"
+		original.flags.ignore_validate_update_after_submit = True
 		original.save(ignore_permissions=True)
 
 	# ---------------- CUSTOMER ASSET - REPAIR (No stock impact) ----------------
@@ -169,4 +172,5 @@ class GateEntryPass(Document):
 		original_serials = {row.serial_no for row in original.items}
 
 		original.status = "Returned" if returned_serials == original_serials else "Partially Returned"
+		original.flags.ignore_validate_update_after_submit = True
 		original.save(ignore_permissions=True)
