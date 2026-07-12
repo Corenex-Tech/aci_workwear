@@ -15,15 +15,18 @@ class GateEntryPass(Document):
 			self.validate_return_against()
 
 	def validate_items(self):
-		if self.gate_entry_purpose == "Customer Asset - Repair":
+		if not self.items:
+			frappe.throw(_("Please add at least one item"))
+	
+		if self.gate_entry_purpose == "Non Inventory Movement":
 			for row in self.items:
 				if not row.get("serial_no"):
-					frappe.throw(_("Row {0}: Serial No is mandatory for Customer Asset - Repair").format(row.idx))
+					frappe.throw(_("Row {0}: Serial No is mandatory for Non Inventory Movement").format(row.idx))
 
 	def validate_return_against(self):
-		if not self.return_against:
+		if not self.return_against and self.type == "Returnable":
 			frappe.throw(_("Return Against (original Outward Gate Entry) is mandatory for Inward entries"))
-
+		
 		original = frappe.get_doc("Gate Entry Pass", self.return_against)
 
 		if original.entry_type != "Outward":
@@ -36,9 +39,9 @@ class GateEntryPass(Document):
 			frappe.throw(_("Referenced Gate Entry {0} is already fully returned").format(self.return_against))
 
 	def on_submit(self):
-		if self.gate_entry_purpose == "Sample Movement":
+		if self.gate_entry_purpose == "Inventory Movement":
 			self.handle_sample_movement()
-		elif self.gate_entry_purpose == "Customer Asset - Repair":
+		elif self.gate_entry_purpose == "Non Inventory Movement":
 			self.handle_customer_asset()
 
 	def on_cancel(self):
@@ -52,7 +55,7 @@ class GateEntryPass(Document):
 
 		self.status = "Cancelled"
 
-	# ---------------- SAMPLE MOVEMENT (Stock impacting) ----------------
+	# ---------------- Inventory Movement (Stock impacting) ----------------
 
 	def handle_sample_movement(self):
 		if self.entry_type == "Outward":
@@ -144,7 +147,7 @@ class GateEntryPass(Document):
 		original.flags.ignore_validate_update_after_submit = True
 		original.save(ignore_permissions=True)
 
-	# ---------------- CUSTOMER ASSET - REPAIR (No stock impact) ----------------
+	# ---------------- Non Inventory Movement (No stock impact) ----------------
 
 	def handle_customer_asset(self):
 		if self.entry_type == "Outward":
@@ -174,3 +177,44 @@ class GateEntryPass(Document):
 		original.status = "Returned" if returned_serials == original_serials else "Partially Returned"
 		original.flags.ignore_validate_update_after_submit = True
 		original.save(ignore_permissions=True)
+
+
+@frappe.whitelist()
+def create_return_entry(source_name):
+	source = frappe.get_doc("Gate Entry Pass", source_name)
+
+	if source.entry_type != "Outward":
+		frappe.throw(_("Only Outward entries can be returned."))
+
+	if source.type != "Returnable":
+		frappe.throw(_("Only Returnable entries can be returned."))
+
+	doc = frappe.new_doc("Gate Entry Pass")
+
+	# Parent fields
+	doc.company = source.company
+	doc.type = source.type
+	doc.gate_entry_purpose = source.gate_entry_purpose
+	doc.gate_entry_no = source.gate_entry_no
+	doc.entry_type = "Inward"
+
+	doc.source_warehouse = source.target_warehouse
+	doc.target_warehouse = source.source_warehouse
+
+	doc.return_against = source.name
+
+	for d in source.items:
+		doc.append("items", {
+			"item_code": d.item_code,
+			"non_inventory_item": d.non_inventory_item,
+			"item_name": d.item_name,
+			"qty": d.qty,
+			"uom": d.uom,
+			"serial_no": d.serial_no,
+			"source_warehouse": d.target_warehouse,
+			"target_warehouse": d.source_warehouse
+		})
+
+	doc.save()
+
+	return doc.name
