@@ -148,8 +148,7 @@
   {
    "fieldname": "gate_entry_no",
    "fieldtype": "Data",
-   "label": "Gate Entry No",
-   "reqd": 1
+   "label": "Gate Entry No"
   },
   {
    "fieldname": "type",

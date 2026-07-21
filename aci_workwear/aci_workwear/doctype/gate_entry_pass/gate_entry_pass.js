@@ -23,7 +23,13 @@ frappe.ui.form.on("Gate Entry Pass", {
                 });
             });
         }
+
+        set_warehouse_filter(frm);
+
 	},
+    entry_type(frm) {
+        set_warehouse_filter(frm);
+    },
     gate_entry_purpose(frm) {
 		toggle_child_fields(frm);
 	},
@@ -101,5 +107,29 @@ function set_warehouse_in_children(frm, child_table, warehouse_field, warehouse)
             warehouse_field,
             warehouse
         );
+    });
+}
+
+
+function set_warehouse_filter(frm) {
+
+    frm.set_query("target_warehouse", function () {
+        if (frm.doc.entry_type === "Outward") {
+            return {
+                filters: {
+                    custom_is_gate_entry_warehouse: 1
+                }
+            };
+        }
+    });
+
+    frm.set_query("source_warehouse", function () {
+        if (frm.doc.entry_type === "Inward") {
+            return {
+                filters: {
+                    custom_is_gate_entry_warehouse: 1
+                }
+            };
+        }
     });
 }
