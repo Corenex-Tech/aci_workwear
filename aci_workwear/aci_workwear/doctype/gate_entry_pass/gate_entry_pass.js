@@ -23,7 +23,13 @@ frappe.ui.form.on("Gate Entry Pass", {
                 });
             });
         }
+
+        set_warehouse_filter(frm);
+
 	},
+    entry_type(frm) {
+        set_warehouse_filter(frm);
+    },
     gate_entry_purpose(frm) {
 		toggle_child_fields(frm);
 	},
@@ -62,7 +68,9 @@ frappe.ui.form.on("Gate Entry Items", {
 
 function toggle_child_fields(frm) {
     let is_inventory = frm.doc.gate_entry_purpose === "Inventory Movement";
+    let is_non_inventory = frm.doc.gate_entry_purpose === "Non Inventory Movement";
 
+    // Mandatory fields
     frm.fields_dict.items.grid.update_docfield_property(
         "item_code",
         "reqd",
@@ -73,6 +81,19 @@ function toggle_child_fields(frm) {
         "non_inventory_item",
         "reqd",
         is_inventory ? 0 : 1
+    );
+
+    // Read Only fields
+    frm.fields_dict.items.grid.update_docfield_property(
+        "item_code",
+        "read_only",
+        is_non_inventory ? 1 : 0
+    );
+
+    frm.fields_dict.items.grid.update_docfield_property(
+        "item_name",
+        "read_only",
+        is_non_inventory ? 1 : 0
     );
 
     frm.refresh_field("items");
@@ -86,5 +107,29 @@ function set_warehouse_in_children(frm, child_table, warehouse_field, warehouse)
             warehouse_field,
             warehouse
         );
+    });
+}
+
+
+function set_warehouse_filter(frm) {
+
+    frm.set_query("target_warehouse", function () {
+        if (frm.doc.entry_type === "Outward") {
+            return {
+                filters: {
+                    custom_is_gate_entry_warehouse: 1
+                }
+            };
+        }
+    });
+
+    frm.set_query("source_warehouse", function () {
+        if (frm.doc.entry_type === "Inward") {
+            return {
+                filters: {
+                    custom_is_gate_entry_warehouse: 1
+                }
+            };
+        }
     });
 }

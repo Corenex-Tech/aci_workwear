@@ -20,8 +20,8 @@ class GateEntryPass(Document):
 	
 		if self.gate_entry_purpose == "Non Inventory Movement":
 			for row in self.items:
-				if not row.get("serial_no"):
-					frappe.throw(_("Row {0}: Serial No is mandatory for Non Inventory Movement").format(row.idx))
+				if not row.get("non_inventory_item"):
+					frappe.throw(_("Row {0}: Non Inventory Item is mandatory for Non Inventory Movement").format(row.idx))
 
 	def validate_return_against(self):
 		if not self.return_against and self.type == "Returnable":
@@ -160,21 +160,21 @@ class GateEntryPass(Document):
 
 	def validate_serial_match_against_original(self):
 		original = frappe.get_doc("Gate Entry Pass", self.return_against)
-		original_serials = {row.serial_no for row in original.items}
+		original_non_inventory_item = {row.non_inventory_item for row in original.items}
 
 		for row in self.items:
-			if row.serial_no not in original_serials:
-				frappe.throw(_("Row {0}: Serial No {1} does not match any item in the original entry {2}")
-							.format(row.idx, row.serial_no, self.return_against))
+			if row.non_inventory_item not in original_non_inventory_item:
+				frappe.throw(_("Row {0}: Non Inventory Item {1} does not match any item in the original entry {2}")
+							.format(row.idx, row.non_inventory_item, self.return_against))
 			# if not row.get("condition_on_return"):
 			# 	frappe.throw(_("Row {0}: Condition on Return is mandatory").format(row.idx))
 
 	def update_original_asset_status(self):
 		original = frappe.get_doc("Gate Entry Pass", self.return_against)
-		returned_serials = {row.serial_no for row in self.items}
-		original_serials = {row.serial_no for row in original.items}
+		returned_non_inventory_item = {row.non_inventory_item for row in self.items}
+		original_non_inventory_item = {row.non_inventory_item for row in original.items}
 
-		original.status = "Returned" if returned_serials == original_serials else "Partially Returned"
+		original.status = "Returned" if returned_non_inventory_item == original_non_inventory_item else "Partially Returned"
 		original.flags.ignore_validate_update_after_submit = True
 		original.save(ignore_permissions=True)
 
@@ -210,7 +210,7 @@ def create_return_entry(source_name):
 			"item_name": d.item_name,
 			"qty": d.qty,
 			"uom": d.uom,
-			"serial_no": d.serial_no,
+			"non_inventory_item": d.non_inventory_item,
 			"source_warehouse": d.target_warehouse,
 			"target_warehouse": d.source_warehouse
 		})
