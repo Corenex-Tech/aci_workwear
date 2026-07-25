@@ -201,6 +201,11 @@ def create_return_entry(source_name):
 	doc.source_warehouse = source.target_warehouse
 	doc.target_warehouse = source.source_warehouse
 
+	doc.responsible_person_type = source.responsible_person_type
+	doc.responsible_employee = source.responsible_employee
+	doc.remarks = source.remarks
+	doc.external_person_name = source.external_person_name
+
 	doc.return_against = source.name
 
 	for d in source.items:
