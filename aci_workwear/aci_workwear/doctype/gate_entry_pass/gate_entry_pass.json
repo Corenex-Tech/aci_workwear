@@ -19,6 +19,10 @@
   "return_against",
   "status",
   "amended_from",
+  "responsible_person_type",
+  "responsible_employee",
+  "external_person_name",
+  "remarks",
   "stock_movement_details_tab",
   "source_warehouse",
   "expected_return_date",
@@ -156,6 +160,30 @@
    "label": "Type",
    "options": "\nReturnable\nNon Returnable",
    "reqd": 1
+  },
+  {
+   "fieldname": "responsible_person_type",
+   "fieldtype": "Select",
+   "label": "Responsible Person Type",
+   "options": "Employee\nExternal Person"
+  },
+  {
+   "depends_on": "eval:doc.responsible_person_type == 'Employee'",
+   "fieldname": "responsible_employee",
+   "fieldtype": "Link",
+   "label": "Employee",
+   "options": "Employee"
+  },
+  {
+   "depends_on": "eval:doc.responsible_person_type=='External Person'",
+   "fieldname": "external_person_name",
+   "fieldtype": "Data",
+   "label": "External Person Name"
+  },
+  {
+   "fieldname": "remarks",
+   "fieldtype": "Small Text",
+   "label": "Remarks"
   }
  ],
  "grid_page_length": 50,
@@ -167,7 +195,7 @@
    "link_fieldname": "custom_gate_entry_pass"
   }
  ],
- "modified": "2026-07-12 12:15:21.923416",
+ "modified": "2026-07-24 15:16:13.149687",
  "modified_by": "Administrator",
  "module": "ACI Workwear",
  "name": "Gate Entry Pass",
