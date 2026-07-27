@@ -13,6 +13,9 @@
   "gate_entry_purpose",
   "entry_type",
   "gate_entry_no",
+  "party_type",
+  "party",
+  "external_party_name",
   "column_break_k9gd",
   "posting_date",
   "posting_time",
@@ -184,6 +187,28 @@
    "fieldname": "remarks",
    "fieldtype": "Small Text",
    "label": "Remarks"
+  },
+  {
+   "fieldname": "party_type",
+   "fieldtype": "Link",
+   "ignore_user_permissions": 1,
+   "label": "Party Type",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "party",
+   "fieldtype": "Dynamic Link",
+   "label": "Party",
+   "mandatory_depends_on": "eval:!doc.external_party_name",
+   "options": "party_type"
+  },
+  {
+   "depends_on": "eval:!doc.party",
+   "fieldname": "external_party_name",
+   "fieldtype": "Data",
+   "label": "External Party Name",
+   "mandatory_depends_on": "eval:!doc.party"
   }
  ],
  "grid_page_length": 50,
@@ -195,7 +220,7 @@
    "link_fieldname": "custom_gate_entry_pass"
   }
  ],
- "modified": "2026-07-24 15:16:13.149687",
+ "modified": "2026-07-25 22:10:36.298217",
  "modified_by": "Administrator",
  "module": "ACI Workwear",
  "name": "Gate Entry Pass",
