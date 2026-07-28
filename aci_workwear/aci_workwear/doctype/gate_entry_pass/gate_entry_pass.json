@@ -12,19 +12,16 @@
   "type",
   "gate_entry_purpose",
   "entry_type",
-  "gate_entry_no",
   "party_type",
   "party",
   "external_party_name",
+  "mobile_no",
   "column_break_k9gd",
   "posting_date",
   "posting_time",
   "return_against",
   "status",
   "amended_from",
-  "responsible_person_type",
-  "responsible_employee",
-  "external_person_name",
   "remarks",
   "stock_movement_details_tab",
   "source_warehouse",
@@ -129,9 +126,11 @@
    "read_only": 1
   },
   {
+   "depends_on": "eval:doc.type == 'Returnable'",
    "fieldname": "expected_return_date",
    "fieldtype": "Date",
-   "label": "Expected Return Date"
+   "label": "Expected Return Date",
+   "mandatory_depends_on": "eval:doc.type == 'Returnable'"
   },
   {
    "fieldname": "column_break_k9gd",
@@ -153,35 +152,11 @@
    "label": "Gate Entry Items"
   },
   {
-   "fieldname": "gate_entry_no",
-   "fieldtype": "Data",
-   "label": "Gate Entry No"
-  },
-  {
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
    "options": "\nReturnable\nNon Returnable",
    "reqd": 1
-  },
-  {
-   "fieldname": "responsible_person_type",
-   "fieldtype": "Select",
-   "label": "Responsible Person Type",
-   "options": "Employee\nExternal Person"
-  },
-  {
-   "depends_on": "eval:doc.responsible_person_type == 'Employee'",
-   "fieldname": "responsible_employee",
-   "fieldtype": "Link",
-   "label": "Employee",
-   "options": "Employee"
-  },
-  {
-   "depends_on": "eval:doc.responsible_person_type=='External Person'",
-   "fieldname": "external_person_name",
-   "fieldtype": "Data",
-   "label": "External Person Name"
   },
   {
    "fieldname": "remarks",
@@ -190,10 +165,10 @@
   },
   {
    "fieldname": "party_type",
-   "fieldtype": "Link",
+   "fieldtype": "Select",
    "ignore_user_permissions": 1,
    "label": "Party Type",
-   "options": "DocType",
+   "options": "\nSupplier\nCustomer\nEmployee",
    "reqd": 1
   },
   {
@@ -209,6 +184,11 @@
    "fieldtype": "Data",
    "label": "External Party Name",
    "mandatory_depends_on": "eval:!doc.party"
+  },
+  {
+   "fieldname": "mobile_no",
+   "fieldtype": "Data",
+   "label": "Mobile No"
   }
  ],
  "grid_page_length": 50,
@@ -220,7 +200,7 @@
    "link_fieldname": "custom_gate_entry_pass"
   }
  ],
- "modified": "2026-07-25 22:10:36.298217",
+ "modified": "2026-07-28 20:38:12.021810",
  "modified_by": "Administrator",
  "module": "ACI Workwear",
  "name": "Gate Entry Pass",
