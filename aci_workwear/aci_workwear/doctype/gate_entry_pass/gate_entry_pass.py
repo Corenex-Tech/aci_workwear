@@ -196,6 +196,11 @@ def create_return_entry(source_name):
 	doc.type = source.type
 	doc.gate_entry_purpose = source.gate_entry_purpose
 	doc.gate_entry_no = source.gate_entry_no
+	doc.party_type = source.party_type
+	doc.party = source.party
+	doc.external_party_name = source.external_party_name
+	doc.expected_return_date = source.expected_return_date
+	doc.mobile_no = source.mobile_no
 	doc.entry_type = "Inward"
 
 	doc.source_warehouse = source.target_warehouse
