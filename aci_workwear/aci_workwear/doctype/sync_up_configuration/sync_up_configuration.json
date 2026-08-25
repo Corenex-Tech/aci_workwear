@@ -1,0 +1,111 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-08-13 00:29:28.126097",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enabled",
+  "section_break_wkyw",
+  "document",
+  "priority",
+  "column_break_fuiy",
+  "sync_child_tables",
+  "sync_linked_masters",
+  "sync_on_submit",
+  "last_synced_on",
+  "section_break_hf3w",
+  "filters"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
+  },
+  {
+   "fieldname": "section_break_wkyw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "document",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Document",
+   "options": "DocType",
+   "reqd": 1
+  },
+  {
+   "fieldname": "priority",
+   "fieldtype": "Int",
+   "in_list_view": 1,
+   "label": "Priority",
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_fuiy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "sync_child_tables",
+   "fieldtype": "Check",
+   "label": "Sync Child Tables"
+  },
+  {
+   "default": "0",
+   "fieldname": "sync_linked_masters",
+   "fieldtype": "Check",
+   "label": "Sync Linked Masters"
+  },
+  {
+   "fieldname": "section_break_hf3w",
+   "fieldtype": "Section Break",
+   "label": "Sync Up Filters"
+  },
+  {
+   "fieldname": "filters",
+   "fieldtype": "Table",
+   "label": "Filters",
+   "options": "Sync Up Filter"
+  },
+  {
+   "fieldname": "last_synced_on",
+   "fieldtype": "Datetime",
+   "label": "Last Synced On"
+  },
+  {
+   "default": "0",
+   "fieldname": "sync_on_submit",
+   "fieldtype": "Check",
+   "label": "Sync on Submit"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2026-08-24 21:16:49.732086",
+ "modified_by": "Administrator",
+ "module": "ACI Workwear",
+ "name": "Sync Up Configuration",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "creation",
+ "sort_order": "DESC",
+ "states": []
+}
