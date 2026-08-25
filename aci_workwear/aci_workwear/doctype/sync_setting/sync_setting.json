@@ -1,0 +1,134 @@
+{
+ "actions": [],
+ "allow_bulk_edit": 1,
+ "allow_rename": 1,
+ "creation": "2026-08-12 23:58:11.179936",
+ "default_view": "List",
+ "doctype": "DocType",
+ "engine": "InnoDB",
+ "field_order": [
+  "enable",
+  "section_break_snzi",
+  "url",
+  "branch",
+  "company",
+  "column_break_tojt",
+  "api_key",
+  "api_secrete",
+  "section_break_djh6",
+  "last_synced_timestamp_push",
+  "column_break_dxgo",
+  "last_synced_timestamp_pull",
+  "section_break_vgyb",
+  "local_url",
+  "column_break_acvd"
+ ],
+ "fields": [
+  {
+   "default": "0",
+   "fieldname": "enable",
+   "fieldtype": "Check",
+   "label": "Enable"
+  },
+  {
+   "fieldname": "section_break_snzi",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "url",
+   "fieldtype": "Data",
+   "label": "URL",
+   "mandatory_depends_on": "eval:doc.enable == 1",
+   "options": "URL"
+  },
+  {
+   "fieldname": "branch",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Branch",
+   "options": "Branch"
+  },
+  {
+   "fieldname": "company",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Company",
+   "options": "Company"
+  },
+  {
+   "fieldname": "column_break_tojt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "api_key",
+   "fieldtype": "Data",
+   "label": "API Key",
+   "mandatory_depends_on": "eval:doc.enable == 1"
+  },
+  {
+   "fieldname": "api_secrete",
+   "fieldtype": "Password",
+   "label": "API Secrete",
+   "mandatory_depends_on": "eval:doc.enable == 1"
+  },
+  {
+   "fieldname": "section_break_djh6",
+   "fieldtype": "Section Break",
+   "hidden": 1,
+   "label": "Last Sync Up "
+  },
+  {
+   "fieldname": "last_synced_timestamp_push",
+   "fieldtype": "Datetime",
+   "label": "Last Synced Timestamp(Push)"
+  },
+  {
+   "fieldname": "column_break_dxgo",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "last_synced_timestamp_pull",
+   "fieldtype": "Datetime",
+   "label": "Last Synced Timestamp(Pull)"
+  },
+  {
+   "fieldname": "section_break_vgyb",
+   "fieldtype": "Section Break",
+   "hidden": 1
+  },
+  {
+   "fieldname": "local_url",
+   "fieldtype": "Data",
+   "label": "Local URL"
+  },
+  {
+   "fieldname": "column_break_acvd",
+   "fieldtype": "Column Break"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "issingle": 1,
+ "links": [],
+ "modified": "2026-08-25 13:28:26.488353",
+ "modified_by": "Administrator",
+ "module": "ACI Workwear",
+ "name": "Sync Setting",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "print": 1,
+   "read": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "row_format": "Dynamic",
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
