@@ -10,6 +10,7 @@
   "section_break_3few",
   "company",
   "type",
+  "garment_work_order",
   "gate_entry_purpose",
   "entry_type",
   "party_type",
@@ -60,8 +61,8 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Gate Entry Purpose",
-   "options": "\nInventory Movement\nNon Inventory Movement",
-   "reqd": 1
+   "mandatory_depends_on": "eval:!doc.garment_work_order",
+   "options": "\nInventory Movement\nNon Inventory Movement"
   },
   {
    "default": "Today",
@@ -108,15 +109,15 @@
    "fieldname": "source_warehouse",
    "fieldtype": "Link",
    "label": "Source Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
+   "mandatory_depends_on": "eval:in_list([\"Work Order \u2013 Issue\", \"Returnable\", \"Non Returnable\"], doc.type)",
+   "options": "Warehouse"
   },
   {
    "fieldname": "target_warehouse",
    "fieldtype": "Link",
    "label": "Target Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
+   "mandatory_depends_on": "eval:in_list([\"Work Order \u2013 Receive\", \"Returnable\", \"Non Returnable\"], doc.type)\r\n\r\n",
+   "options": "Warehouse"
   },
   {
    "fieldname": "stock_entry",
@@ -155,7 +156,7 @@
    "fieldname": "type",
    "fieldtype": "Select",
    "label": "Type",
-   "options": "\nReturnable\nNon Returnable",
+   "options": "\nReturnable\nNon Returnable\nWork Order \u2013 Issue\nWork Order \u2013 Receive",
    "reqd": 1
   },
   {
@@ -189,6 +190,14 @@
    "fieldname": "mobile_no",
    "fieldtype": "Data",
    "label": "Mobile No"
+  },
+  {
+   "depends_on": "eval:in_list([\"Work Order \u2013 Issue\", \"Work Order \u2013 Receive\"], doc.type)\n",
+   "fieldname": "garment_work_order",
+   "fieldtype": "Link",
+   "label": "Garment Work Order",
+   "mandatory_depends_on": "eval:in_list([\"Work Order \u2013 Issue\", \"Work Order \u2013 Receive\"], doc.type)\n",
+   "options": "Garment Work Order"
   }
  ],
  "grid_page_length": 50,
@@ -200,7 +209,7 @@
    "link_fieldname": "custom_gate_entry_pass"
   }
  ],
- "modified": "2026-07-28 20:38:12.021810",
+ "modified": "2026-09-09 00:36:34.180195",
  "modified_by": "Administrator",
  "module": "ACI Workwear",
  "name": "Gate Entry Pass",
