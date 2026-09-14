@@ -1,6 +1,7 @@
 # Copyright (c) 2026, Corenex and contributors
 # For license information, please see license.txt
 
+from erpwork.erpwork.doctype.garment_work_order.garment_work_order import _get_required_item_row_names
 import frappe
 from frappe import _
 from frappe.model.document import Document
@@ -11,7 +12,7 @@ class GateEntryPass(Document):
 
 	def validate(self):
 		self.validate_items()
-		if self.entry_type == "Inward":
+		if self.entry_type == "Inward" and self.type not in ("Work Order – Receive", "Work Order – Issue"):
 			self.validate_return_against()
 
 	def validate_items(self):
@@ -43,6 +44,8 @@ class GateEntryPass(Document):
 			self.handle_sample_movement()
 		elif self.gate_entry_purpose == "Non Inventory Movement":
 			self.handle_customer_asset()
+		elif self.type in ("Work Order – Issue", "Work Order – Receive"):
+			self.handle_work_order_movement()
 
 	def on_cancel(self):
 		if self.stock_entry:
@@ -177,6 +180,157 @@ class GateEntryPass(Document):
 		original.status = "Returned" if returned_non_inventory_item == original_non_inventory_item else "Partially Returned"
 		original.flags.ignore_validate_update_after_submit = True
 		original.save(ignore_permissions=True)
+
+	def handle_work_order_movement(self):
+		"""
+		Create Stock Entry based on Work Order Gate Entry type.
+
+		Work Order Issue   -> Material Issue
+		Work Order Receive -> Material Receipt
+		"""
+
+		if self.type == "Work Order – Issue":
+			se_name = self.create_work_order_stock_entry(
+				stock_entry_type="Material Issue",
+				purpose="Material Issue",
+			)
+
+			self.db_set("stock_entry", se_name)
+			self.db_set("status", "Out")
+
+		elif self.type == "Work Order – Receive":
+			se_name = self.create_work_order_stock_entry(
+				stock_entry_type="Material Receipt",
+				purpose="Material Receipt",
+			)
+
+			self.db_set("stock_entry", se_name)
+			self.db_set("status", "In")
+
+	def create_work_order_stock_entry(self, stock_entry_type, purpose):
+		"""
+		Create Material Issue / Material Receipt Stock Entry
+		from Gate Entry Pass and Garment Work Order.
+		"""
+
+		if not self.garment_work_order:
+			frappe.throw(_("Garment Work Order is required"))
+
+		work_order = frappe.get_doc(
+			"Garment Work Order",
+			self.garment_work_order
+		)
+
+		if not self.items:
+			frappe.throw(_("Please add at least one item"))
+
+		req_row_names = _get_required_item_row_names(
+			self.garment_work_order
+		)
+
+		has_sed_custom = frappe.db.has_column(
+			"Stock Entry Detail",
+			"custom_garment_work_order"
+		)
+		has_sed_req_item = frappe.db.has_column(
+			"Stock Entry Detail",
+			"custom_garment_work_order_item"
+		)
+		has_sed_planning = frappe.db.has_column(
+			"Stock Entry Detail",
+			"custom_garment_planning"
+		)
+
+		se = frappe.new_doc("Stock Entry")
+
+		se.stock_entry_type = stock_entry_type
+		se.purpose = purpose
+		se.custom_gate_entry_pass = self.name
+		se.garment_work_order = work_order.name
+		se.company = work_order.company
+		se.posting_date = self.posting_date or nowdate()
+		se.posting_time = self.posting_time or nowtime()
+		se.set_posting_time = 1
+
+		if frappe.db.has_column("Stock Entry", "custom_garment_planning"):
+			se.custom_garment_planning = work_order.garment_planning
+
+		for row in self.items:
+
+			if not row.item_code or flt(row.qty) <= 0:
+				continue
+
+			item = frappe.get_cached_doc(
+				"Item",
+				row.item_code
+			)
+
+			item_uom = row.uom or item.stock_uom
+			stock_uom = item.stock_uom
+			conversion_factor = 1
+
+			if item_uom != stock_uom:
+				conversion_factor = frappe.db.get_value(
+					"UOM Conversion Detail",
+					{
+						"parent": item.name,
+						"uom": item_uom,
+					},
+					"conversion_factor",
+				)
+
+				if not conversion_factor:
+					frappe.throw(
+						_("Conversion factor not found for Item {0} and UOM {1}").format(
+							row.item_code,
+							item_uom
+						)
+					)
+
+			item_data = {
+				"item_code": row.item_code,
+				"item_name": row.item_name,
+				"qty": flt(row.qty),
+				"uom": item_uom,
+				"stock_uom": stock_uom,
+				"conversion_factor": conversion_factor,
+			}
+
+			if has_sed_custom:
+				item_data["custom_garment_work_order"] = work_order.name
+
+			if has_sed_req_item:
+				item_data["custom_garment_work_order_item"] = req_row_names.get(
+					row.item_code
+				)
+
+			if has_sed_planning:
+				item_data["custom_garment_planning"] = work_order.garment_planning
+
+			if stock_entry_type == "Material Issue":
+				item_data["s_warehouse"] = work_order.set_source_warehouse
+
+			elif stock_entry_type == "Material Receipt":
+				item_data["t_warehouse"] = row.target_warehouse
+
+			se.append(
+				"items",
+				item_data
+			)
+
+		if not se.items:
+			frappe.throw(_("No valid inventory items found."))
+
+		se.set_transfer_qty()
+		se.set_actual_qty()
+		se.calculate_rate_and_amount(
+			raise_error_if_no_rate=False
+		)
+
+		se.insert(ignore_permissions=True)
+		se.submit()
+
+		return se.name
 
 
 @frappe.whitelist()
