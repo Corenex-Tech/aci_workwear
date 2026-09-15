@@ -1,7 +1,7 @@
 frappe.ui.form.on("Stock Entry", {
     custom_garment_work_orders: function(frm) {
 
-        if (!frm.doc.custom_garment_work_orders) {
+        if (!frm.doc.garment_work_order) {
             frm.clear_table("items");
             frm.refresh_field("items");
             return;
@@ -10,7 +10,7 @@ frappe.ui.form.on("Stock Entry", {
         frappe.call({
             method: "aci_workwear.aci_workwear.custom_script.stock_entry.stock_entry.get_garment_work_order_items",
             args: {
-                work_order: frm.doc.custom_garment_work_orders
+                work_order: frm.doc.garment_work_order
             },
             freeze: true,
             freeze_message: __("Fetching Garment Work Order items..."),
@@ -68,7 +68,7 @@ frappe.ui.form.on("Stock Entry", {
                         "{0} item(s) added from Garment Work Order {1}",
                         [
                             r.message.length,
-                            frm.doc.custom_garment_work_orders
+                            frm.doc.garment_work_order
                         ]
                     ),
                     indicator: "green"

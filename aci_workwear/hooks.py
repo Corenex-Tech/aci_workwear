@@ -142,6 +142,18 @@ doc_events = {
     "*": {
         "on_submit": "aci_workwear.aci_workwear.custom_script.sender.on_document_submit",
     },
+    
+    "Stock Entry": {
+		"before_submit": [
+			"aci_workwear.aci_workwear.custom_script.stock_entry.stock_entry.update_material_receipt_before_submit",
+		],
+		"on_submit": [
+			"aci_workwear.aci_workwear.custom_script.stock_entry.stock_entry.update_material_receipt_on_submit",
+		],
+		"on_cancel": [
+			"aci_workwear.aci_workwear.custom_script.stock_entry.stock_entry.update_material_receipt_on_cancel",
+		],
+	},
 }
 
 # Scheduled Tasks
